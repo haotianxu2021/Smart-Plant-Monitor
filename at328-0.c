@@ -317,12 +317,20 @@ int main()
                 }
             } else if (light_on == 1 && set_light <= light_value) {
                 light_on_timer++;
-                if (light_on_timer > 20) {
+                if (light_on_timer > 5){
                     PORTB &= ~(1 << PB1);
                     light_on = 0;
                     light_timer = 0;
                     light_on_timer = 0;
                 }
+                
+                // light_on_timer++;
+                // if (light_on_timer > 20) {
+                //     PORTB &= ~(1 << PB1);
+                //     light_on = 0;
+                //     light_timer = 0;
+                //     light_on_timer = 0;
+                // }
             }
 
             // mois
@@ -335,8 +343,15 @@ int main()
                     mois_timer = 0;
                 }
             } else if (mois_on == 1 && set_mois <= mois_value) {
+                PORTD &= ~(1 << PD6);
+                mois_on = 0;
+                mois_timer = 0;
+                mois_on_timer = 0;
+                
+            }
+            if (mois_on == 1) {
                 mois_on_timer++;
-                if (mois_on_timer > 20) {
+                if (mois_on_timer > 30) {
                     PORTD &= ~(1 << PD6);
                     mois_on = 0;
                     mois_timer = 0;
@@ -354,16 +369,23 @@ int main()
                 }
             } else if (temp_on == 1 && set_temp <= temp_value) {
                 temp_on_timer++;
-                if (temp_on_timer > 20) {
+                if (temp_on_timer>5){
                     PORTB &= ~(1 << PB2);
                     temp_on = 0;
                     temp_timer = 0;
                     temp_on_timer = 0;
                 }
+                
+                // if (temp_on_timer > 20) {
+                //     PORTB &= ~(1 << PB2);
+                //     temp_on = 0;
+                //     temp_timer = 0;
+                //     temp_on_timer = 0;
+                // }
             }
             nutr_timer++;
 
-            if (nutr_timer>=200){
+            if (nutr_timer>=250){
                 nutr_timer_min++;
             }
             if (nutr_unit==0 && set_nutr <= nutr_timer_min){
