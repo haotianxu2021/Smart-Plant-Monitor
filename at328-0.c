@@ -108,6 +108,7 @@ int main()
     uint8_t light_on_timer = 0;
     uint8_t mois_on_timer = 0;
     uint8_t temp_on_timer = 0;
+    uint8_t nutr_open = 1;
 
  
     while(1) /* Loop the messsage continously */
@@ -165,7 +166,7 @@ int main()
             lcd_goto(0x14);
             // Print the temp sensor value on the LCD
             lcd_puts(nutr_buff);
-            lcd_puts("  "); // Clear any trailing digits
+            lcd_puts(" "); // Clear any trailing digits
             if (set_state==2 && flash_timer>1){
                 lcd_goto(0x14);
                 lcd_puts("                   ");
@@ -175,7 +176,7 @@ int main()
                 lcd_goto(0x14);
                 // Print the temp sensor value on the LCD
                 lcd_puts(nutr_buff);
-                lcd_puts("  "); // Clear any trailing digits
+                lcd_puts(" "); // Clear any trailing digits
             }
             
             if (set_state==3 && flash_timer>1){
@@ -195,7 +196,7 @@ int main()
                     set_temp++;
                 }
                 else if (set_state == 1){
-                    set_mois = set_mois + 10;
+                    set_mois = set_mois + 100;
                 }
                 else if (set_state == 2){
                     set_nutr++;
@@ -209,7 +210,7 @@ int main()
                     }
                 }
                 else if (set_state == 3){
-                    set_light++;
+                    set_light = set_light + 10;
                 }
                 set_timer = 0;
                 flash_timer = 0;
@@ -222,13 +223,29 @@ int main()
                     set_temp--;
                 }
                 else if (set_state == 1){
-                    set_mois = set_mois - 10;
+                    set_mois = set_mois - 100;
                 }
                 else if (set_state == 2){
                     set_nutr--;
+                    if (nutr_unit == 2 && set_nutr < 1){
+                        nutr_unit = 1;
+                        set_nutr = 23;
+                    }
+                    else if (nutr_unit == 1 && set_nutr < 1){
+                        nutr_unit = 0;
+                        set_nutr = 59;
+                    }
+                    if (set_nutr>=60 && nutr_unit==0){
+                        set_nutr = 1;
+                        nutr_unit = 1;
+                    }
+                    else if (set_nutr>=24 && nutr_unit==1){
+                        set_nutr = 1;
+                        nutr_unit = 2;
+                    }
                 }
                 else if (set_state == 3){
-                    set_light--;
+                    set_light = set_light - 10;
                 }
                 set_timer = 0;
                 flash_timer = 0;
@@ -295,7 +312,7 @@ int main()
             lcd_goto(0x14);
             // Print the temp sensor value on the LCD
             lcd_puts(nutr_buff);
-            lcd_puts("    "); // Clear any trailing digits
+            lcd_puts(" "); // Clear any trailing digits
 
             // Set the cursor to the last line
             lcd_goto(0x54);
@@ -385,7 +402,7 @@ int main()
             }
             nutr_timer++;
 
-            if (nutr_timer>=250){
+            if (nutr_timer>=300){
                 nutr_timer_min++;
             }
             if (nutr_unit==0 && set_nutr <= nutr_timer_min){
